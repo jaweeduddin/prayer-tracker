@@ -1,6 +1,87 @@
-alert("Website loaded successfully");
 
+
+alert("Website loaded successfully");
+if ("Notification" in window) {
+
+    Notification.requestPermission();
+
+}
 let completedCount = 0;
+// PRAYER TIMES
+// REAL PRAYER TIMES
+
+let prayerTimes = {};
+
+
+
+// GET PRAYER TIMES
+
+async function loadPrayerTimes(){
+
+ 
+
+    try{
+
+
+
+        let response = await fetch(
+
+            "https://api.aladhan.com/v1/timingsByCity?city=Hyderabad&country=India&method=1"
+
+        );
+
+
+
+        let data = await response.json();
+
+
+
+        prayerTimes = {
+
+            Fajr:
+            data.data.timings.Fajr,
+
+            Dhuhr:
+            data.data.timings.Dhuhr,
+
+            Asr:
+            data.data.timings.Asr,
+
+            Maghrib:
+            data.data.timings.Maghrib,
+
+            Isha:
+            data.data.timings.Isha
+
+        };
+
+
+
+        console.log(
+
+            "Prayer Times Loaded:",
+
+            prayerTimes
+
+        );
+
+
+
+    }
+
+    catch(error){
+
+        console.log(
+
+            "Prayer API Error",
+
+            error
+
+        );
+
+    }
+
+}
 
 let prayerStatus = {
 
@@ -165,8 +246,7 @@ function markprayer(prayer){
     document.getElementById(prayer);
 
     let savedData =
-    localStorage.getItem(
-        currentUser + "-" + prayer
+    localStorage.getItem(currentUser + "-" + today + "-" + prayer
     );
 
     if(savedData === "completed"){
@@ -185,9 +265,16 @@ function markprayer(prayer){
     "Alhamdulillah Done";
 
     localStorage.setItem(
-        currentUser + "-" + prayer,
-        "completed"
-    );
+
+    currentUser
+    + "-"
+    + today
+    + "-"
+    + prayer,
+
+    "completed"
+
+);
 
     completedCount++;
 
@@ -208,7 +295,7 @@ function loadPrayer(prayer){
 
     let savedData =
     localStorage.getItem(
-        currentUser + "-" + prayer
+        currentUser + "-" + today + "-" + prayer
     );
 
     if(savedData === "completed"){
@@ -764,8 +851,7 @@ function resetprayer(){
     prayers.forEach(function(prayer){
 
         localStorage.removeItem(
-            currentUser + "-" + prayer
-        );
+currentUser + "-" + today + "-" + prayer);
 
     });
 
@@ -877,3 +963,349 @@ if(localStorage.getItem("loggedin") === "true"){
     updateDashboard();
 
 }
+
+// ===============================
+// PRAYER REMINDER NOTIFICATIONS
+// ===============================
+
+let lastNotificationTimes = {};
+
+
+
+// ======================================
+// WORKING PRAYER REMINDER SYSTEM
+// ======================================
+
+
+// TEST TIMES
+
+// CHANGE THESE FOR TESTING
+
+
+
+
+
+// STORE LAST NOTIFICATIONS
+
+
+
+
+// SHOW NOTIFICATION
+
+function showPrayerNotification(prayer){
+
+    if(Notification.permission === "granted"){
+
+        new Notification(
+
+            "🕌 " + prayer + " Reminder",
+
+            {
+
+                body:
+                "You have not prayed "
+                + prayer +
+                " yet.",
+
+                icon: "icon-192.png"
+
+            }
+
+        );
+
+    }
+
+}
+
+
+
+// CONVERT TIME
+
+function convertToMinutes(time){
+
+    let parts = time.split(":");
+
+    let hours = parseInt(parts[0]);
+
+    let minutes = parseInt(parts[1]);
+
+    return (hours * 60) + minutes;
+
+}
+
+
+
+// CHECK REMINDERS
+
+function checkPrayerReminder(){
+
+    let currentUser =
+
+    localStorage.getItem(
+
+        "currentUser"
+
+    );
+
+
+
+    if(!currentUser){
+
+        return;
+
+    }
+
+
+
+    let now = new Date();
+
+
+
+    let currentMinutes =
+
+    (now.getHours() * 60)
+
+    +
+
+    now.getMinutes();
+
+
+
+    for(let prayer in prayerTimes){
+
+
+
+        let prayerMinutes =
+
+        convertToMinutes(
+
+            prayerTimes[prayer]
+
+        );
+
+
+
+        let completed =
+
+        localStorage.getItem(
+
+currentUser + "-" + today + "-" + prayer
+        );
+
+
+
+        if(completed !== "completed"){
+
+
+
+            if(currentMinutes >= prayerMinutes){
+
+
+
+                let difference =
+
+                currentMinutes
+
+                -
+
+                prayerMinutes;
+
+
+
+                if(difference % 15 === 0){
+
+
+
+                    if(
+
+                        lastNotificationTimes[prayer]
+
+                        !== currentMinutes
+
+                    ){
+
+
+
+                        showPrayerNotification(
+
+                            prayer
+
+                        );
+
+
+
+                        lastNotificationTimes[prayer]
+
+                        = currentMinutes;
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+
+
+// MISSED WARNING
+
+function checkMissedFajr(){
+
+
+
+    let currentUser =
+
+    localStorage.getItem(
+
+        "currentUser"
+
+    );
+
+
+
+    if(!currentUser){
+
+        return;
+
+    }
+
+
+
+    let now = new Date();
+
+
+
+    let currentMinutes =
+
+    (now.getHours() * 60)
+
+    +
+
+    now.getMinutes();
+
+
+
+    let dhuhrMinutes =
+
+    convertToMinutes(
+
+        prayerTimes.Dhuhr
+
+    );
+
+
+
+    let fajrCompleted =
+
+    localStorage.getItem(
+
+        currentUser + "-" + today + "-Fajr"
+
+    );
+
+
+
+    if(
+
+        currentMinutes >= dhuhrMinutes
+
+        &&
+
+        fajrCompleted !== "completed"
+
+    ){
+
+
+
+        if(
+
+            !localStorage.getItem(
+
+                "fajr-warning-shown"
+
+            )
+
+        ){
+
+
+
+            alert(
+
+                "⚠️ You missed Fajr Salah.\n\n"
+
+                +
+
+                "The most burdensome prayers "
+
+                +
+
+                "upon the hypocrites are "
+
+                +
+
+                "Isha and Fajr.\n\n"
+
+                +
+
+                "(Sahih al-Bukhari)"
+
+            );
+
+
+
+            localStorage.setItem(
+
+                "fajr-warning-shown",
+
+                "yes"
+
+            );
+
+        }
+
+    }
+
+}
+
+
+
+// RUN EVERY 10 SECONDS
+
+setInterval(
+
+    checkPrayerReminder,
+
+    10000
+
+);
+
+
+
+setInterval(
+
+    checkMissedFajr,
+
+    10000
+
+);
+
+setInterval(
+
+    loadPrayerTimes,
+
+    3600000
+
+);
+
+// RUN NOW ALSO
+
+loadPrayerTimes();
+
+checkPrayerReminder();
+
+checkMissedFajr();
