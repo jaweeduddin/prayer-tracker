@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>Prayer Tracker</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+
+
+    <!-- LOGIN -->
+
+    <div id="login-container">
+
+        <h2>Prayer Tracker Login</h2>
+
+        <input
+        type="text"
+        id="username-text"
+        placeholder="Enter Username">
+
+        <br><br>
+
+        <input
+        type="password"
+        id="password-input"
+        placeholder="Enter Password">
+
+        <br><br>
+
+        <button onclick="login()">
+            Login
+        </button>
+
+        <button onclick="register()">
+            Register
+        </button>
+
+    </div>
+
+
+
+    <!-- APP -->
+
+    <div id="app-container">
+
+
+
+        <h1 id="welcome-text"></h1>
+
+        <h4 id="date-text"></h4>
+
+
+
+        <h2 id="progress-text">
+            Completed: 0 / 5
+        </h2>
+
+      
+
+        <!-- PROGRESS BAR -->
+
+        <div class="progress-container">
+
+            <div id="progress-bar"></div>
+
+        </div>
+
+
+
+        <h3 id="percentage-text">
+            0%
+        </h3>
+  <div id="dashboard">
+
+    <h2>Your Salah Statistics !</h2>
+
+    <p id="total-done"></p>
+
+    <p id="total-missed"></p>
+
+    <p id="fajr-missed"></p>
+
+    <p id="dhuhr-missed"></p>
+
+    <p id="asr-missed"></p>
+
+    <p id="maghrib-missed"></p>
+
+    <p id="isha-missed"></p>
+
+</div>
+<button onclick="toggleHistory()">
+
+View Prayer History
+
+</button>
+
+        <!-- HISTORY -->
+<div id="history-section">
+
+<h2>Prayer History</h2>
+<input
+type="date"
+id="history-date">
+
+<button onclick="searchHistory()">
+
+Search
+
+</button>
+<div id="history-result"></div>
+<table id="history-table">
+            <tr>
+
+                <th>Date</th>
+
+                <th>Fajr</th>
+
+                <th>Dhuhr</th>
+
+                <th>Asr</th>
+
+                <th>Maghrib</th>
+
+                <th>Isha</th>
+
+            </tr>
+
+        </table>
+</div>
+
+
+        <!-- PRAYERS -->
+
+        <div class="prayer-container">
+
+            <button
+            id="Fajr"
+            onclick="markprayer('Fajr')">
+                Fajr
+            </button>
+
+            <button
+            id="Dhuhr"
+            onclick="markprayer('Dhuhr')">
+                Dhuhr
+            </button>
+
+            <button
+            id="Asr"
+            onclick="markprayer('Asr')">
+                Asr
+            </button>
+
+            <button
+            id="Maghrib"
+            onclick="markprayer('Maghrib')">
+                Maghrib
+            </button>
+
+            <button
+            id="Isha"
+            onclick="markprayer('Isha')">
+                Isha
+            </button>
+
+        </div>
+
+
+
+        <!-- BOTTOM BUTTONS -->
+
+        <div class="bottom-buttons">
+
+            <button onclick="resetprayer()">
+                Reset
+            </button>
+
+            <button onclick="logout()">
+                Logout
+            </button>
+
+        </div>
+
+
+
+    </div>
+
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
