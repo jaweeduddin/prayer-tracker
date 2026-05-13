@@ -96,7 +96,26 @@ let prayerStatus = {
     Isha: "Astaghfirullah Missed"
 
 };
+// AZKAR STATUS
 
+let azkarStatus = {
+
+    Fajr:
+    "Astaghfirullah Missed",
+
+    Dhuhr:
+    "Astaghfirullah Missed",
+
+    Asr:
+    "Astaghfirullah Missed",
+
+    Maghrib:
+    "Astaghfirullah Missed",
+
+    Isha:
+    "Astaghfirullah Missed"
+
+};
 let users =
 JSON.parse(localStorage.getItem("users")) || [];
 
@@ -263,7 +282,51 @@ function markprayer(prayer){
 
     prayerStatus[prayer] =
     "Alhamdulillah Done";
+     // ASK AZKAR
 
+let didAzkar = confirm(
+
+    "Did you read "
+
+    + prayer +
+
+    " Azkar?"
+
+);
+
+
+
+// SAVE AZKAR STATUS
+
+if(didAzkar){
+
+    azkarStatus[prayer] =
+
+    "Alhamdulillah Done";
+
+}
+
+else{
+
+    azkarStatus[prayer] =
+
+    "Astaghfirullah Missed";
+
+}
+// SAVE AZKAR IN LOCAL STORAGE
+
+localStorage.setItem(
+
+    currentUser
+    + "-"
+    + today
+    + "-"
+    + prayer
+    + "-azkar",
+
+    azkarStatus[prayer]
+
+);
     localStorage.setItem(
 
     currentUser
@@ -282,6 +345,7 @@ function markprayer(prayer){
     saveHistory();
 
 loadHistory();
+updateDashboard();
 }
 
 
@@ -313,7 +377,30 @@ function loadPrayer(prayer){
         prayer + " completed !";
 
         completedCount++;
+// LOAD AZKAR STATUS
 
+let savedAzkar =
+
+localStorage.getItem(
+
+    currentUser
+    + "-"
+    + today
+    + "-"
+    + prayer
+    + "-azkar"
+
+);
+
+
+
+if(savedAzkar){
+
+    azkarStatus[prayer] =
+
+    savedAzkar;
+
+}
     }
 
 }
@@ -579,7 +666,7 @@ function updateDashboard(){
             ishaMissed++;
 
         }
-
+ 
     });
 
 
@@ -635,7 +722,38 @@ function updateDashboard(){
     ).innerText =
     "Isha Missed: "
     + ishaMissed;
+ document.getElementById(
+    "azkar-status"
+).innerHTML =
 
+`
+<h3>Your Azkar Statistics !</h3>
+
+<p>
+Fajr:
+${azkarStatus.Fajr}
+</p>
+
+<p>
+Dhuhr:
+${azkarStatus.Dhuhr}
+</p>
+
+<p>
+Asr:
+${azkarStatus.Asr}
+</p>
+
+<p>
+Maghrib:
+${azkarStatus.Maghrib}
+</p>
+
+<p>
+Isha:
+${azkarStatus.Isha}
+</p>
+`;
 }
 function toggleHistory(){
 
@@ -852,7 +970,16 @@ function resetprayer(){
 
         localStorage.removeItem(
 currentUser + "-" + today + "-" + prayer);
+localStorage.removeItem(
 
+currentUser
++ "-"
++ today
++ "-"
++ prayer
++ "-azkar"
+
+);
     });
 
     prayerStatus = {
@@ -868,7 +995,26 @@ currentUser + "-" + today + "-" + prayer);
         Isha: "Astaghfirullah Missed"
 
     };
+// RESET AZKAR STATUS
 
+azkarStatus = {
+
+    Fajr:
+    "Astaghfirullah Missed",
+
+    Dhuhr:
+    "Astaghfirullah Missed",
+
+    Asr:
+    "Astaghfirullah Missed",
+
+    Maghrib:
+    "Astaghfirullah Missed",
+
+    Isha:
+    "Astaghfirullah Missed"
+
+};
     completedCount = 0;
 
     resetButtons();
