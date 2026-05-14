@@ -256,96 +256,193 @@ function updateWelcome(){
 
 // MARK PRAYER
 
+// MARK / UNMARK PRAYER
+
 function markprayer(prayer){
 
     let currentUser =
     localStorage.getItem("currentUser");
 
+
+
     let button =
     document.getElementById(prayer);
 
-    let savedData =
-    localStorage.getItem(currentUser + "-" + today + "-" + prayer
-    );
 
-    if(savedData === "completed"){
 
-        return;
+    let prayerKey =
 
-    }
-
-    button.style.background =
-"linear-gradient(135deg,#22c55e,#16a34a)";
-
-    button.innerText =
-    prayer + " completed !";
-
-    prayerStatus[prayer] =
-    "Alhamdulillah Done";
-     // ASK AZKAR
-
-let didAzkar = confirm(
-
-    "Did you read "
-
-    + prayer +
-
-    " Azkar?"
-
-);
+    currentUser
+    + "-"
+    + today
+    + "-"
+    + prayer;
 
 
 
-// SAVE AZKAR STATUS
-
-if(didAzkar){
-
-    azkarStatus[prayer] =
-
-    "Alhamdulillah Done";
-
-}
-
-else{
-
-    azkarStatus[prayer] =
-
-    "Astaghfirullah Missed";
-
-}
-// SAVE AZKAR IN LOCAL STORAGE
-
-localStorage.setItem(
+    let azkarKey =
 
     currentUser
     + "-"
     + today
     + "-"
     + prayer
-    + "-azkar",
+    + "-azkar";
 
-    azkarStatus[prayer]
 
-);
+
+    let savedData =
+    localStorage.getItem(prayerKey);
+
+
+
+    // =========================
+    // DOUBLE CLICK = UNCHECK
+    // =========================
+
+    if(savedData === "completed"){
+
+
+
+        localStorage.removeItem(
+            prayerKey
+        );
+
+
+
+        localStorage.removeItem(
+            azkarKey
+        );
+
+
+
+        prayerStatus[prayer] =
+        "Astaghfirullah Missed";
+
+
+
+        azkarStatus[prayer] =
+        "Astaghfirullah Missed";
+
+
+
+        button.style.background =
+"linear-gradient(135deg,#dc2626,#991b1b)";
+
+
+
+        button.innerText =
+        prayer;
+
+
+
+        completedCount--;
+
+
+
+        saveHistory();
+
+        loadHistory();
+
+        updateDashboard();
+
+        updateProgress();
+
+
+
+        return;
+
+    }
+
+
+
+    // =========================
+    // COMPLETE PRAYER
+    // =========================
+
+    button.style.background =
+"linear-gradient(135deg,#22c55e,#16a34a)";
+
+
+
+    button.innerText =
+    prayer + " completed !";
+
+
+
+    prayerStatus[prayer] =
+    "Alhamdulillah Done";
+
+
+
+    // ASK AZKAR
+
+    let didAzkar = confirm(
+
+        "Did you read "
+
+        + prayer +
+
+        " Azkar?"
+
+    );
+
+
+
+    if(didAzkar){
+
+        azkarStatus[prayer] =
+
+        "Alhamdulillah Done";
+
+    }
+
+    else{
+
+        azkarStatus[prayer] =
+
+        "Astaghfirullah Missed";
+
+    }
+
+
+
+    // SAVE AZKAR
+
     localStorage.setItem(
 
-    currentUser
-    + "-"
-    + today
-    + "-"
-    + prayer,
+        azkarKey,
 
-    "completed"
+        azkarStatus[prayer]
 
-);
+    );
+
+
+
+    // SAVE PRAYER
+
+    localStorage.setItem(
+
+        prayerKey,
+
+        "completed"
+
+    );
+
+
 
     completedCount++;
 
+
+
     updateProgress();
+
     saveHistory();
 
-loadHistory();
-updateDashboard();
+    loadHistory();
+
+    updateDashboard();
+
 }
 
 
